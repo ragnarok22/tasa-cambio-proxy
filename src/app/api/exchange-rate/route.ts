@@ -13,17 +13,17 @@ export async function GET(request: NextRequest) {
   }
 
   const searchParams = request.nextUrl.searchParams;
-  const dateFrom =
-    searchParams.get('date_from') ||
-    new Date().toISOString().split('T')[0] + ' 00:00:01';
-  const dateTo =
-    searchParams.get('date_to') ||
-    new Date().toISOString().split('T')[0] + ' 23:59:01';
+  const dateFrom = searchParams.get('date_from');
+  const dateTo = searchParams.get('date_to');
 
   try {
     const url = new URL('https://tasas.eltoque.com/v1/trmi');
-    url.searchParams.set('date_from', dateFrom);
-    url.searchParams.set('date_to', dateTo);
+    if (dateFrom) {
+      url.searchParams.set('date_from', dateFrom);
+    }
+    if (dateTo) {
+      url.searchParams.set('date_to', dateTo);
+    }
 
     const response = await fetch(url.toString(), {
       headers: {
