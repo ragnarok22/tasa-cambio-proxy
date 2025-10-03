@@ -1,0 +1,51 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+export const revalidate = 3600; // Cache for 1 hour
+
+export async function GET(request: NextRequest) {
+  const token = process.env.EL_TOQUE_API_TOKEN;
+
+  if (!token) {
+    return NextResponse.json(
+      { error: 'EL_TOQUE_API_TOKEN is not configured' },
+      { status: 500 }
+    );
+  }
+
+  const searchParams = request.nextUrl.searchParams;
+  const dateFrom =
+    searchParams.get('date_from') ||
+    new Date().toISOString().split('T')[0] + ' 00:00:01';
+  const dateTo =
+    searchParams.get('date_to') ||
+    new Date().toISOString().split('T')[0] + ' 23:59:01';
+
+  try {
+    const url = new URL('https://tasas.eltoque.com/v1/trmi');
+    url.searchParams.set('date_from', dateFrom);
+    url.searchParams.set('date_to', dateTo);
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        accept: '*/*',
+        Authorization: `Bearer ${token}`,
+      },
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: `API error: ${response.status}` },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}
