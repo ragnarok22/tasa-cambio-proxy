@@ -19,7 +19,7 @@ Where is this documentation issue located?
 - [ ] SECURITY.md
 - [ ] CLAUDE.md
 - [ ] Code comments
-- [ ] Other: ****\_\_\_****
+- [ ] Other: \***\*\_\_\_\*\***
 
 ## Current State
 

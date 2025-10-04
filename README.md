@@ -2,6 +2,8 @@
 
 A Next.js application that displays real-time Cuban currency exchange rates (USD, EUR, MLC) from El Toque's TRMI (Tasa Representativa del Mercado Informal) API.
 
+> **Note:** Exchange rates displayed are for informational purposes only and should be used as a reference. Actual rates may vary in real transactions.
+
 ## Features
 
 - 🇨🇺 Real-time exchange rates for USD, EUR, and MLC to Cuban Peso (CUP)
@@ -103,7 +105,9 @@ src/
 │   └── globals.css               # Global styles
 ```
 
-## Deploy on Vercel
+## Deployment
+
+### Deploy on Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ragnarok22/tasa-cambio-proxy)
 
@@ -112,6 +116,43 @@ src/
 3. Add `EL_TOQUE_API_TOKEN` to environment variables
 4. Deploy
 
+### Deploy Anywhere
+
+This is a standard Next.js application and can be deployed to any platform that supports Node.js:
+
+```bash
+# Build the application
+pnpm build
+
+# Start production server
+pnpm start
+```
+
+Make sure to set the `EL_TOQUE_API_TOKEN` environment variable in your hosting platform.
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) before submitting a Pull Request.
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run `pnpm prettier` and `pnpm lint`
+5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+6. Push to your branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## Security
+
+Please review our [Security Policy](SECURITY.md) for information on reporting vulnerabilities.
+
 ## License
 
-MIT
+MIT - See [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Exchange rate data provided by [El Toque](https://eltoque.com)
+- Built with [Next.js](https://nextjs.org) and [Tailwind CSS](https://tailwindcss.com)

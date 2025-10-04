@@ -25,8 +25,11 @@ export default async function Home() {
         <h1 className="text-4xl font-bold text-gray-800 mb-2 text-center">
           Tasas de Cambio - Cuba
         </h1>
-        <p className="text-gray-600 text-center mb-8">
+        <p className="text-gray-600 text-center mb-2">
           Tasas actualizadas del mercado informal
+        </p>
+        <p className="text-gray-500 text-sm text-center mb-8 italic">
+          Valores referenciales - Pueden variar en transacciones reales
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -74,6 +77,10 @@ export default async function Home() {
 
         <div className="mt-8 text-center text-gray-500 text-sm">
           <p>Datos proporcionados por El Toque</p>
+          <p className="mt-1 text-xs">
+            Las tasas mostradas son referenciales y pueden no reflejar el valor
+            exacto en operaciones reales
+          </p>
         </div>
       </div>
     </div>
