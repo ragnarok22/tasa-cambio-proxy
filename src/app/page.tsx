@@ -46,8 +46,8 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 flex flex-col">
+        <div className="max-w-6xl mx-auto flex-1 flex flex-col justify-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-2 text-center">
             Tasas de Cambio - Cuba
           </h1>
@@ -113,6 +113,20 @@ export default async function Home() {
             </p>
           </div>
         </div>
+
+        <footer className="mt-auto pt-8 pb-4 text-center text-gray-600 text-sm">
+          <p>
+            Creado por{' '}
+            <a
+              href="https://reinierhernandez.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+            >
+              Reinier Hernández
+            </a>
+          </p>
+        </footer>
       </div>
     </>
   );
