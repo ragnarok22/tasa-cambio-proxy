@@ -5,15 +5,44 @@ interface ExchangeRate {
 }
 
 async function getExchangeRates(): Promise<ExchangeRate> {
-  const res = await fetch('http://localhost:3000/api/exchange-rate', {
-    cache: 'no-store',
-  });
+  const token = process.env.EL_TOQUE_API_TOKEN;
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch exchange rates');
+  if (!token) {
+    // Return mock data if no token
+    return {
+      usd: 400,
+      eur: 500,
+      mlc: 200,
+    };
   }
 
-  return res.json();
+  try {
+    const response = await fetch('https://tasas.eltoque.com/v1/trmi', {
+      headers: {
+        accept: '*/*',
+        Authorization: `Bearer ${token}`,
+      },
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      // Return mock data on API error
+      return {
+        usd: 400,
+        eur: 500,
+        mlc: 200,
+      };
+    }
+
+    return await response.json();
+  } catch (error) {
+    // Return mock data on fetch error
+    return {
+      usd: 400,
+      eur: 500,
+      mlc: 200,
+    };
+  }
 }
 
 export default async function Home() {
