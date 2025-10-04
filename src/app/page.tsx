@@ -21,47 +21,28 @@ async function getExchangeRates(): Promise<ExchangeRate> {
   const token = process.env.EL_TOQUE_API_TOKEN;
 
   if (!token) {
-    // Return mock data if no token
-    return {
-      usd: 400,
-      eur: 500,
-      mlc: 200,
-    };
+    throw new Error('EL_TOQUE_API_TOKEN is not configured');
   }
 
-  try {
-    const response = await fetch('https://tasas.eltoque.com/v1/trmi', {
-      headers: {
-        accept: '*/*',
-        Authorization: `Bearer ${token}`,
-      },
-      next: { revalidate: 3600 },
-    });
+  const response = await fetch('https://tasas.eltoque.com/v1/trmi', {
+    headers: {
+      accept: '*/*',
+      Authorization: `Bearer ${token}`,
+    },
+    next: { revalidate: 3600 },
+  });
 
-    if (!response.ok) {
-      // Return mock data on API error
-      return {
-        usd: 400,
-        eur: 500,
-        mlc: 200,
-      };
-    }
-
-    const data: TRMIResponse = await response.json();
-
-    return {
-      usd: data.tasas.USD,
-      eur: data.tasas.ECU,
-      mlc: data.tasas.MLC,
-    };
-  } catch (error) {
-    // Return mock data on fetch error
-    return {
-      usd: 400,
-      eur: 500,
-      mlc: 200,
-    };
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
   }
+
+  const data: TRMIResponse = await response.json();
+
+  return {
+    usd: data.tasas.USD,
+    eur: data.tasas.ECU,
+    mlc: data.tasas.MLC,
+  };
 }
 
 export default async function Home() {
