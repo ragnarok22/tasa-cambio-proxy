@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Tasa de Cambio Cuba](./logo-tarifa-cambio.png)
+<img src="public/icon-192.png" alt="Tasa de Cambio Cuba" width="120">
 
 **Consulta las tasas de cambio del mercado informal cubano en tiempo real**
 
