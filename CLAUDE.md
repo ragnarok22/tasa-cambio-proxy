@@ -153,12 +153,32 @@ The app includes comprehensive SEO optimization:
 - **Generated Icons**: All in `public/` (favicon-_.png, icon-_.png, apple-touch-icon.png)
 - **Screenshots**: Reference `public/screenshot-desktop.png` in README (placeholder)
 
-## Deployment Notes
+## CI/CD
 
-- **Platform**: Vercel (recommended)
+### GitHub Actions
+
+Two workflows are configured in `.github/workflows/`:
+
+1. **CI Workflow** (`ci.yml`):
+   - Runs on push to `main` and all PRs
+   - Checks: format (prettier), lint (eslint), build
+   - Uses mock token for build (app uses fallback data)
+   - Verifies `.next/` directory is created
+   - Status badge shown in README
+
+2. **Deploy Preview Workflow** (`deploy-preview.yml`):
+   - Runs on PR open/sync
+   - Posts comment with preview deployment info
+   - Includes QA checklist and social media validation tools
+   - Works alongside Vercel's automatic PR deployments
+
+### Deployment Notes
+
+- **Platform**: Vercel (recommended, auto-deploys from GitHub)
 - **Environment Variables**: `EL_TOQUE_API_TOKEN` (required for production)
 - **Base URL**: `https://tasa-cambio-cuba.vercel.app`
 - **Edge Runtime Warning**: `icon.tsx` and `opengraph-image.tsx` use edge runtime (disables static generation for those routes - this is expected)
+- **Preview URLs**: Each PR gets automatic preview deployment from Vercel
 
 ## Project Documentation
 

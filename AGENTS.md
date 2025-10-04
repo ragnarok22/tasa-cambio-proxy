@@ -2,39 +2,42 @@
 
 ## Project Structure & Module Organization
 
-- Core Next.js app resides in `src/app`; `layout.tsx` anchors the shell and `page.tsx` renders the dashboard flow.
-- Exchange-rate logic is split between `src/app/api/exchange-rate/route.ts` and shared utilities in `src/app/actions.ts`.
-- Global styling stays in `src/app/globals.css`, static assets in `public/`, and future high-level tests should live under `src/tests/`.
-- Root-level configs (`next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `tsconfig.json`) control routing, linting, styles, and TypeScript behavior.
+- Core Next.js app lives in `src/app`; `layout.tsx` defines the shell and `page.tsx` drives the dashboard.
+- Exchange-rate logic splits between `src/app/api/exchange-rate/route.ts` (API handler) and shared actions in `src/app/actions.ts`.
+- Global styles live in `src/app/globals.css`; static assets belong in `public/`.
+- High-level or integration tests should land in `src/tests/`; colocate focused unit specs alongside source as `*.test.ts(x)`.
 
 ## Build, Test, and Development Commands
 
-- `pnpm install` syncs dependencies (pnpm is the required package manager).
-- `pnpm dev` launches the Turbopack dev server at `http://localhost:3000` for rapid iteration.
-- `pnpm build` compiles the production bundle; `pnpm start` serves the compiled output.
-- `pnpm lint`, `pnpm prettier`, and `pnpm prettier:check` enforce code quality; hit `/api/exchange-rate` locally (`curl http://localhost:3000/api/exchange-rate`) before every review cycle.
+- `pnpm install` resolves dependencies; rerun after pulling main.
+- `pnpm dev` starts the Turbopack dev server at `http://localhost:3000`.
+- `pnpm build` compiles the production bundle; confirm before any release request.
+- `pnpm start` serves the built output for smoke checks.
+- `pnpm lint`, `pnpm prettier`, and `pnpm prettier:check` enforce formatting; fix issues before review.
+- Hit the health check with `curl http://localhost:3000/api/exchange-rate` prior to sign-off.
 
 ## Coding Style & Naming Conventions
 
-- Author strongly typed TypeScript; pages may default-export, while shared modules prefer named exports (`export function ExchangeRateCard`).
-- Keep Tailwind classes ordered layout → spacing → color inside `className` props.
-- Use kebab-case for directories, PascalCase for React components, camelCase for hooks/utilities (e.g., `useExchangeRates`).
-- Prettier governs formatting—avoid manual indentation or spacing adjustments.
+- Author strongly typed TypeScript; default-export pages, but prefer named exports elsewhere (e.g., `export function ExchangeRateCard`).
+- Use Tailwind classes ordered layout → spacing → color within `className`.
+- Directory names use kebab-case, React components PascalCase, hooks/utilities camelCase.
+- Let Prettier handle spacing; avoid manual overrides.
 
 ## Testing Guidelines
 
-- Preferred stack: Vitest with Testing Library when tests are introduced.
-- Co-locate unit specs as `*.test.ts(x)` next to source files; reserve `src/tests/` for broader scenarios or integration flows.
-- Minimum pre-review checklist: run `pnpm lint`, ensure endpoint health via `curl`, and document any new scripts in `package.json`.
+- Favor Vitest with Testing Library; mirror component structure when placing tests (e.g., `Button.test.tsx`).
+- Maintain concise, deterministic specs; prefer integration flows under `src/tests/`.
+- Always run `pnpm lint` and applicable tests before requesting review; document additional scripts in `package.json`.
 
 ## Commit & Pull Request Guidelines
 
-- Follow Conventional Commits (`feat(exchange-rate): add MLC quote`, `fix(api): retry on 5xx`). Keep each commit atomic.
-- PR descriptions should outline user-visible changes, link relevant issues, flag environment/config updates, and attach UI screenshots when visuals change.
-- Confirm `pnpm build` (or a Vercel preview) succeeds before requesting review.
+- Follow Conventional Commits (`feat(exchange-rate): add cache`) to keep history scannable.
+- Keep commits atomic; stage only related changes.
+- PR descriptions should outline user-facing impact, link issues, call out config/env updates, and attach UI screenshots when visuals shift.
+- Confirm `pnpm build` succeeds and note any outstanding risks or TODOs.
 
 ## Security & Configuration Tips
 
-- Store secrets in `.env.local`, notably `EL_TOQUE_API_TOKEN`; never commit real credentials.
-- Maintain the one-hour cache policy unless product approves a change.
-- Wrap external `fetch` calls with defensive error handling and supply fallback data for dependents.
+- Store secrets (e.g., `EL_TOQUE_API_TOKEN`) in `.env.local`; never commit credentials.
+- Preserve the one-hour API cache policy unless product approves changes.
+- Wrap external `fetch` calls with defensive error handling and provide fallbacks for downstream consumers.
