@@ -6,6 +6,7 @@
 
 **Consulta las tasas de cambio del mercado informal cubano en tiempo real**
 
+[![CI](https://github.com/ragnarok22/tasa-cambio-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/ragnarok22/tasa-cambio-proxy/actions/workflows/ci.yml)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ragnarok22/tasa-cambio-proxy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

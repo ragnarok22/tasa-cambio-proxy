@@ -1,0 +1,52 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  preview-comment:
+    name: Preview Deployment Comment
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Comment PR with preview info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const headRef = context.payload.pull_request.head.ref;
+
+            // Vercel automatically deploys PRs
+            const message = `## 🚀 Deployment Preview
+
+            Your PR is being deployed by Vercel.
+
+            **Preview URL:** Will be available when Vercel deployment completes
+
+            ### 📝 What to check:
+            - [ ] UI displays all three currencies (USD, EUR, MLC)
+            - [ ] Cards are responsive on mobile and desktop
+            - [ ] Footer displays author attribution
+            - [ ] Open Graph image works (test with social preview tools)
+            - [ ] Favicons load correctly
+            - [ ] No console errors
+
+            ### 🔗 Testing Tools:
+            - [Twitter Card Validator](https://cards-dev.twitter.com/validator)
+            - [Facebook Debugger](https://developers.facebook.com/tools/debug/)
+            - [LinkedIn Inspector](https://www.linkedin.com/post-inspector/)
+
+            ---
+
+            _This comment will be updated when deployment is complete._`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: message
+            });
