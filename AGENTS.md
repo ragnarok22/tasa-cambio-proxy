@@ -2,24 +2,40 @@
 
 ## Project Structure & Module Organization
 
-The Next.js app lives in `src/app`; the root layout is `layout.tsx` and the main dashboard sits in `page.tsx`. The TRMI proxy endpoint resides at `src/app/api/exchange-rate/route.ts` and shares logic with `src/app/actions.ts`. Global styles are consolidated in `src/app/globals.css`, while static assets belong in `public/`. Top-level configs such as `next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, and `tsconfig.json` govern routing, linting, styles, and TypeScript.
+- Next.js source resides in `src/app`; `layout.tsx` defines the shell and `page.tsx` renders the dashboard.
+- API logic sits in `src/app/api/exchange-rate/route.ts` with shared helpers in `src/app/actions.ts`.
+- Global styling lives in `src/app/globals.css`; static assets belong in `public/`.
+- Configuration files (`next.config.ts`, `tsconfig.json`, `eslint.config.mjs`, `postcss.config.mjs`) stay at the repo root. Future integration tests should land in `src/tests/`.
 
 ## Build, Test, and Development Commands
 
-Run `pnpm install` to sync dependencies; pnpm is the canonical package manager. `pnpm dev` launches Next.js with Turbopack at `http://localhost:3000`. Use `pnpm build` to compile the production bundle and `pnpm start` to serve it. Quality checks live in `pnpm lint`, `pnpm prettier`, and `pnpm prettier:check`; run them before every push.
+- `pnpm install` syncs dependencies; pnpm is the required package manager.
+- `pnpm dev` runs the Next.js dev server via Turbopack at `http://localhost:3000`.
+- `pnpm build` compiles the production bundle; `pnpm start` serves that build.
+- `pnpm lint`, `pnpm prettier`, and `pnpm prettier:check` enforce style. Hit `/api/exchange-rate` locally (`curl http://localhost:3000/api/exchange-rate`) before review.
 
 ## Coding Style & Naming Conventions
 
-Write TypeScript and keep components typed. Pages may default-export, but prefer named exports elsewhere (e.g., `export function ExchangeRateCard`). Prettier dictates formatting—no manual tweaks. Tailwind utility classes stay in JSX `className` props and should flow layout → spacing → color. Use kebab-case for directories, PascalCase for React components, and camelCase for hooks (`useExchangeRates`).
+- Write strongly typed TypeScript; favor named exports for modules (`export function ExchangeRateCard`).
+- Keep Tailwind class names ordered layout → spacing → color inside `className` props.
+- Directories use kebab-case, React components use PascalCase, and hooks/utilities use camelCase (`useExchangeRates`).
+- Prettier governs formatting; avoid manual indentation tweaks.
 
 ## Testing Guidelines
 
-Automated tests are not yet scaffolded. When adding them, colocate unit specs as `*.test.ts(x)` next to their sources and place higher-level flows under `src/tests/`. Prefer the Next.js-friendly stack (Vitest + Testing Library) and document new scripts in `package.json`. Always run `pnpm lint` and hit `/api/exchange-rate` locally (e.g., `curl http://localhost:3000/api/exchange-rate`) before requesting review.
+- Vitest + Testing Library are the preferred stack when tests arrive.
+- Co-locate unit specs as `*.test.ts(x)` beside sources and stage broader scenarios under `src/tests/`.
+- At minimum, run `pnpm lint` and confirm the exchange-rate endpoint responds before asking for feedback.
 
 ## Commit & Pull Request Guidelines
 
-Follow the Conventional Commit pattern used in history (`feat(exchange-rate): …`, `fix(api): …`). Keep commits scoped to one change. Pull requests should describe behavior, reference tickets, list environment updates, and include screenshots for UI tweaks. Confirm `pnpm build` or the Vercel preview before requesting merge.
+- Follow Conventional Commits (`feat(exchange-rate): add USD conversion`, `fix(api): handle 5xx retries`).
+- Keep each commit atomic and reference related issues in PR descriptions.
+- PRs should outline behavior changes, note environment or config updates, and include UI screenshots when visuals shift.
+- Verify `pnpm build` or a Vercel preview before requesting review.
 
 ## Security & Configuration Tips
 
-Store the El Toque token in `.env.local` as `EL_TOQUE_API_TOKEN` and never commit real credentials. Stick with the 1-hour cache window unless product requirements change. Review every external `fetch` for robust error states and fallback data.
+- Store `EL_TOQUE_API_TOKEN` in `.env.local` and keep credentials out of git.
+- Preserve the one-hour caching policy unless product signs off on changes.
+- Wrap external `fetch` calls with error handling and supply sensible fallbacks for downstream consumers.

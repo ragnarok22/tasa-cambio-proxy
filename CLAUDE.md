@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Next.js 15 application that displays Cuban currency exchange rates (USD, EUR, MLC) from El Toque's API. The app serves as a proxy to fetch and display TRMI (Tasa Representativa del Mercado Informal) data for users.
 
+**Important**: All displayed rates are informational/referential only and include disclaimers to users that actual rates may vary in real transactions.
+
 ## Development Commands
 
 ```bash
@@ -92,3 +94,14 @@ The El Toque API returns exchange rate data in this format:
 - ESLint with Next.js config for linting
 - Server components by default (App Router)
 - Server actions with 'use server' directive for data mutations
+
+## Release Strategy
+
+This project uses a **rolling release model**. All changes are merged to `main` and deployed immediately. There are no versioned releases - users should always use the latest version from the main branch.
+
+## Project Documentation
+
+- **README.md**: User-facing documentation with setup, deployment, and API information
+- **CONTRIBUTING.md**: Guidelines for contributors including workflow, code standards, and feature ideas
+- **SECURITY.md**: Security policy and vulnerability reporting process
+- **GitHub Templates**: Issue and PR templates located in `.github/`
