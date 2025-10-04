@@ -73,6 +73,7 @@ pnpm build
 
 1. **Keep commits focused** - Each commit should represent a single logical change
 2. **Write clear commit messages**:
+
    ```
    feat: add historical data chart component
    fix: handle missing API token gracefully
