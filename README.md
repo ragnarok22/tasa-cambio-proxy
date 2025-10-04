@@ -21,7 +21,7 @@ A Next.js application that displays real-time Cuban currency exchange rates (USD
 ### 1. Clone and Install
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ragnarok22/tasa-cambio-proxy.git
 cd tasa-cambio-proxy
 pnpm install
 ```
@@ -105,7 +105,7 @@ src/
 
 ## Deploy on Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=<your-repo-url>)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ragnarok22/tasa-cambio-proxy)
 
 1. Push your code to GitHub
 2. Import your repository in Vercel
