@@ -4,6 +4,19 @@ interface ExchangeRate {
   mlc: number;
 }
 
+interface TRMIResponse {
+  tasas: {
+    USD: number;
+    ECU: number;
+    MLC: number;
+    [key: string]: number;
+  };
+  date: string;
+  hour: number;
+  minutes: number;
+  seconds: number;
+}
+
 async function getExchangeRates(): Promise<ExchangeRate> {
   const token = process.env.EL_TOQUE_API_TOKEN;
 
@@ -34,7 +47,13 @@ async function getExchangeRates(): Promise<ExchangeRate> {
       };
     }
 
-    return await response.json();
+    const data: TRMIResponse = await response.json();
+
+    return {
+      usd: data.tasas.USD,
+      eur: data.tasas.ECU,
+      mlc: data.tasas.MLC,
+    };
   } catch (error) {
     // Return mock data on fetch error
     return {

@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const revalidate = 3600; // Cache for 1 hour
 
+interface TRMIResponse {
+  tasas: {
+    USD: number;
+    ECU: number;
+    MLC: number;
+    [key: string]: number;
+  };
+  date: string;
+  hour: number;
+  minutes: number;
+  seconds: number;
+}
+
 export async function GET(request: NextRequest) {
   const token = process.env.EL_TOQUE_API_TOKEN;
 
@@ -34,21 +47,25 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
-      // mockup
-      return NextResponse.json({
-        usd: 400,
-        eur: 500,
-        mlc: 200,
-      });
-
       return NextResponse.json(
         { error: `API error: ${response.status}` },
         { status: response.status }
       );
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    const data: TRMIResponse = await response.json();
+
+    // Transform to simple format for backwards compatibility
+    const transformed = {
+      usd: data.tasas.USD,
+      eur: data.tasas.ECU,
+      mlc: data.tasas.MLC,
+      date: data.date,
+      time: `${data.hour}:${data.minutes}:${data.seconds}`,
+      raw: data, // Include raw data for advanced use
+    };
+
+    return NextResponse.json(transformed);
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' },

@@ -5,6 +5,19 @@ interface FetchTRMIParams {
   dateTo?: string;
 }
 
+interface TRMIResponse {
+  tasas: {
+    USD: number;
+    ECU: number;
+    MLC: number;
+    [key: string]: number;
+  };
+  date: string;
+  hour: number;
+  minutes: number;
+  seconds: number;
+}
+
 export async function fetchTRMI(params?: FetchTRMIParams) {
   const token = process.env.EL_TOQUE_API_TOKEN;
 
@@ -36,8 +49,19 @@ export async function fetchTRMI(params?: FetchTRMIParams) {
       throw new Error(`API error: ${response.status}`);
     }
 
-    const data = await response.json();
-    return { success: true, data };
+    const data: TRMIResponse = await response.json();
+
+    // Transform to simple format
+    const transformed = {
+      usd: data.tasas.USD,
+      eur: data.tasas.ECU,
+      mlc: data.tasas.MLC,
+      date: data.date,
+      time: `${data.hour}:${data.minutes}:${data.seconds}`,
+      raw: data,
+    };
+
+    return { success: true, data: transformed };
   } catch (error) {
     return {
       success: false,
