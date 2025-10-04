@@ -34,6 +34,13 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
+      // mockup
+      return NextResponse.json({
+        usd: 400,
+        eur: 500,
+        mlc: 200,
+      });
+
       return NextResponse.json(
         { error: `API error: ${response.status}` },
         { status: response.status }
