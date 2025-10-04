@@ -135,10 +135,12 @@ Obtiene las tasas de cambio actuales desde El Toque API.
 
 **Query Parameters:**
 
-| Parámetro   | Tipo   | Requerido | Descripción                |
-| ----------- | ------ | --------- | -------------------------- |
-| `date_from` | string | No        | Fecha inicial (YYYY-MM-DD) |
-| `date_to`   | string | No        | Fecha final (YYYY-MM-DD)   |
+| Parámetro   | Tipo   | Requerido | Descripción                                                              |
+| ----------- | ------ | --------- | ------------------------------------------------------------------------ |
+| `date_from` | string | No        | Fecha inicial (YYYY-MM-DD)                                               |
+| `date_to`   | string | No        | Fecha final (YYYY-MM-DD) - Diferencia máxima: 24 horas desde `date_from` |
+
+> **⚠️ Importante:** La diferencia entre `date_from` y `date_to` debe ser menor a 24 horas.
 
 **Respuesta exitosa (200):**
 
@@ -167,9 +169,20 @@ Obtiene las tasas de cambio actuales desde El Toque API.
 }
 ```
 
-**Respuesta de error (500):**
+**Respuestas de error:**
 
 ```json
+// 400 - Rango de fechas inválido
+{
+  "error": "Date range must be less than 24 hours. The difference between date_from and date_to cannot exceed 24 hours."
+}
+
+// 400 - Fechas en orden incorrecto
+{
+  "error": "date_from must be before date_to"
+}
+
+// 500 - Token no configurado
 {
   "error": "EL_TOQUE_API_TOKEN is not configured"
 }
@@ -182,13 +195,16 @@ También puedes usar el server action directamente en componentes:
 ```typescript
 import { fetchTRMI } from '@/app/actions';
 
+// Ejemplo válido: menos de 24 horas de diferencia
 const result = await fetchTRMI({
-  dateFrom: '2025-01-01',
-  dateTo: '2025-01-31',
+  dateFrom: '2025-10-04',
+  dateTo: '2025-10-04', // Mismo día
 });
 
 if (result.success) {
   console.log(result.data);
+} else {
+  console.error(result.error);
 }
 ```
 
@@ -317,7 +333,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 - Website: [reinierhernandez.com](https://reinierhernandez.com)
 - GitHub: [@ragnarok22](https://github.com/ragnarok22)
-- Twitter: [@ragnarok22](https://twitter.com/ragnarok22)
+- Twitter: [@ragnarokreinier](https://twitter.com/ragnarokreinier)
 
 ---
 

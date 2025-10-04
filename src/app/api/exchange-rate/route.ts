@@ -29,6 +29,30 @@ export async function GET(request: NextRequest) {
   const dateFrom = searchParams.get('date_from');
   const dateTo = searchParams.get('date_to');
 
+  // Validate date range (must be less than 24 hours)
+  if (dateFrom && dateTo) {
+    const from = new Date(dateFrom);
+    const to = new Date(dateTo);
+    const diffInHours = (to.getTime() - from.getTime()) / (1000 * 60 * 60);
+
+    if (diffInHours >= 24) {
+      return NextResponse.json(
+        {
+          error:
+            'Date range must be less than 24 hours. The difference between date_from and date_to cannot exceed 24 hours.',
+        },
+        { status: 400 }
+      );
+    }
+
+    if (diffInHours < 0) {
+      return NextResponse.json(
+        { error: 'date_from must be before date_to' },
+        { status: 400 }
+      );
+    }
+  }
+
   try {
     const url = new URL('https://tasas.eltoque.com/v1/trmi');
     if (dateFrom) {

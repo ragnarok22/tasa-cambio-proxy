@@ -28,6 +28,28 @@ export async function fetchTRMI(params?: FetchTRMIParams) {
     };
   }
 
+  // Validate date range (must be less than 24 hours)
+  if (params?.dateFrom && params?.dateTo) {
+    const from = new Date(params.dateFrom);
+    const to = new Date(params.dateTo);
+    const diffInHours = (to.getTime() - from.getTime()) / (1000 * 60 * 60);
+
+    if (diffInHours >= 24) {
+      return {
+        success: false,
+        error:
+          'Date range must be less than 24 hours. The difference between dateFrom and dateTo cannot exceed 24 hours.',
+      };
+    }
+
+    if (diffInHours < 0) {
+      return {
+        success: false,
+        error: 'dateFrom must be before dateTo',
+      };
+    }
+  }
+
   try {
     const url = new URL('https://tasas.eltoque.com/v1/trmi');
     if (params?.dateFrom) {
