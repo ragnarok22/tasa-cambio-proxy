@@ -36,8 +36,7 @@ jobs:
       - name: Build application
         run: pnpm build
         env:
-          # Use mock token for build (app will use fallback data)
-          EL_TOQUE_API_TOKEN: mock_token_for_ci
+          EL_TOQUE_API_TOKEN: ${{ secrets.EL_TOQUE_API_TOKEN }}
 
       - name: Check build output
         run: |
