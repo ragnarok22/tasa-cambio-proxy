@@ -46,14 +46,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'es_ES',
-    url: '/',
+    url: 'https://tasa-cambio-cuba.vercel.app',
     title: 'Tasa de Cambio Cuba - USD, EUR, MLC al Peso Cubano',
     description:
       'Consulta las tasas de cambio actualizadas del mercado informal cubano (TRMI). Datos de El Toque actualizados cada hora.',
     siteName: 'Tasa de Cambio Cuba',
     images: [
       {
-        url: '/og-image.png',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
         alt: 'Tasa de Cambio Cuba - Conversión USD, EUR, MLC a CUP',
@@ -65,8 +65,8 @@ export const metadata: Metadata = {
     title: 'Tasa de Cambio Cuba - USD, EUR, MLC al Peso Cubano',
     description:
       'Consulta las tasas de cambio actualizadas del mercado informal cubano (TRMI).',
-    images: ['/og-image.png'],
-    creator: '@ragnarok22',
+    images: ['/opengraph-image'],
+    creator: '@ragnarokreinier',
   },
   robots: {
     index: true,
