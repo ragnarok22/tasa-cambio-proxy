@@ -1,3 +1,5 @@
+import CubaMapToggle from '@/components/CubaMapToggle';
+
 interface ExchangeRate {
   usd: number;
   eur: number;
@@ -156,6 +158,8 @@ export default async function Home() {
             </a>
           </p>
         </footer>
+
+        <CubaMapToggle nationalUsdRate={rates.usd} />
       </div>
     </>
   );
