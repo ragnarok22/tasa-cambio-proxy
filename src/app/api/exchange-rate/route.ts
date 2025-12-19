@@ -4,8 +4,12 @@ export const revalidate = 3600; // Cache for 1 hour
 
 interface TRMIResponse {
   tasas: {
-    USD: number;
     ECU: number;
+    BNB: number;
+    USD: number;
+    BTC: number;
+    TRX: number;
+    USDT_TRC20: number;
     MLC: number;
     [key: string]: number;
   };
