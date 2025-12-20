@@ -68,9 +68,17 @@ The app fetches data directly from El Toque's TRMI API. There are two approaches
 4. **AI Vision Server Action** (`processProvinceRatesImage`):
    - Processes images containing provincial exchange rate tables
    - Uses OpenAI GPT-4o vision model to extract structured data
-   - Takes a public image URL as input
+   - Takes an optional public image URL as input, defaults to `public/tasa.jpg`
    - Returns array of province rate data: `{ province, usd?, eur?, mlc? }`
    - Validates and parses JSON response from AI
+   - Located in `src/app/actions.ts`
+
+5. **Province Rates Server Action** (`fetchProvinceRates`):
+   - Uses `processProvinceRatesImage` to get real province rates from AI vision
+   - Transforms AI data to match `ProvinceData` structure
+   - Calculates variance based on national rate vs. provincial rate
+   - Maps province names to IDs (CU-XX format for SVG compatibility)
+   - Adds coordinates for tooltip positioning on the map
    - Located in `src/app/actions.ts`
 
 ### API Response Transformation
@@ -123,14 +131,14 @@ El Toque API returns data in this structure:
 
 ### Provincial Exchange Rates
 
-The app includes a provincial breakdown feature:
+The app includes a provincial breakdown feature powered by AI vision:
 
-- **Server Action** (`fetchProvinceRates`): Generates province-specific rates based on national USD rate
-- **Data Structure** (`src/data/province-rates.ts`): Contains variance data for each province (-8% to +12% from national rate)
+- **Data Source**: Provincial rates are extracted from `public/tasa.jpg` using OpenAI GPT-4o vision
+- **Server Action** (`fetchProvinceRates`): Processes the image and transforms data to include variances, IDs, and coordinates
 - **SVG Map** (`src/components/Province-svg-map.tsx`): Interactive Cuba map with tooltips showing province rates
 - **Cuba Paths** (`src/data/cuba-paths.ts`): SVG path data for all 16 Cuban provinces
 - **Color Coding**: Green (< -10%), Blue (-10% to +10%), Indigo (> +10%) relative to national rate
-- **Coordinates**: Each province has tooltip positioning data (x, y percentages in viewBox)
+- **Coordinates**: Each province has tooltip positioning data (x, y percentages in viewBox) defined in `src/app/actions.ts`
 
 ## Tech Stack
 
@@ -138,6 +146,7 @@ The app includes a provincial breakdown feature:
 - **React**: 19.2.3
 - **Styling**: Tailwind CSS 4.1
 - **Fonts**: Geist Sans & Geist Mono (optimized with next/font)
+- **AI**: OpenAI SDK (GPT-4o vision for province rate extraction)
 - **Package Manager**: pnpm 10.24.0
 - **TypeScript**: 5.9.3
 
@@ -216,7 +225,8 @@ Two workflows are configured in `.github/workflows/`:
 3. **Currency Mapping**: El Toque uses `ECU` for Euro, we map it to `EUR`/`eur`
 4. **Mock Data**: App falls back to mock rates (USD: 400, EUR: 500, MLC: 200) if API fails
 5. **Referential Rates**: All UI includes disclaimers that rates are informational only
-6. **Provincial Rates**: Province-specific rates are calculated estimates based on variance percentages, not actual API data
+6. **Provincial Rates**: Province-specific rates are extracted from `public/tasa.jpg` using AI vision (OpenAI GPT-4o)
+7. **OpenAI API Key**: Required for province rate extraction during build; app falls back to empty provinces if missing
 
 ## Testing
 

@@ -80,7 +80,7 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 flex flex-col">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8 flex flex-col">
         <div className="max-w-6xl mx-auto flex-1 flex flex-col justify-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-2 text-center">
             Tasas de Cambio - Cuba
@@ -126,7 +126,7 @@ export default async function Home() {
               </div>
 
               {/* SVG Map */}
-              <div className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4">
+              <div className="mb-6 bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-4">
                 <ProvinceSVGMap provinces={provinceData.provinces} />
               </div>
 

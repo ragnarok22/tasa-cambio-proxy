@@ -1,8 +1,51 @@
 'use server';
 
 import OpenAI from 'openai';
-import { generateProvinceRates } from '@/data/province-rates';
-import type { ProvinceData } from '@/types/province';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import type { ProvinceData, ProvinceRate } from '@/types/province';
+
+// Province name to ID mapping (CU-XX format to match SVG)
+const PROVINCE_NAME_TO_ID: Record<string, string> = {
+  'Pinar del Río': 'CU-01',
+  Artemisa: 'CU-15',
+  'La Habana': 'CU-03',
+  'Ciudad de la Habana': 'CU-03',
+  Mayabeque: 'CU-16',
+  Matanzas: 'CU-04',
+  Cienfuegos: 'CU-06',
+  'Villa Clara': 'CU-05',
+  'Sancti Spíritus': 'CU-07',
+  'Ciego de Ávila': 'CU-08',
+  Camagüey: 'CU-09',
+  'Las Tunas': 'CU-10',
+  Holguín: 'CU-11',
+  Granma: 'CU-12',
+  'Santiago de Cuba': 'CU-13',
+  Guantánamo: 'CU-14',
+  'Isla de la Juventud': 'CU-99',
+  'La Isla de la Juventud': 'CU-99',
+};
+
+// Province coordinates for tooltip positioning (percentages relative to viewBox)
+const PROVINCE_COORDINATES: Record<string, { x: number; y: number }> = {
+  'CU-01': { x: 6, y: 42 },
+  'CU-15': { x: 12, y: 40 },
+  'CU-03': { x: 17, y: 39 },
+  'CU-16': { x: 21, y: 40 },
+  'CU-04': { x: 27, y: 40 },
+  'CU-06': { x: 33, y: 41 },
+  'CU-05': { x: 38, y: 40 },
+  'CU-07': { x: 44, y: 40 },
+  'CU-08': { x: 50, y: 39 },
+  'CU-09': { x: 59, y: 40 },
+  'CU-10': { x: 67, y: 41 },
+  'CU-11': { x: 76, y: 42 },
+  'CU-12': { x: 81, y: 58 },
+  'CU-13': { x: 88, y: 65 },
+  'CU-14': { x: 95, y: 68 },
+  'CU-99': { x: 8, y: 77 },
+};
 
 interface FetchTRMIParams {
   dateFrom?: string;
@@ -97,16 +140,51 @@ export async function fetchTRMI(params?: FetchTRMIParams) {
 }
 
 /**
- * Fetches province exchange rates based on the national USD rate
- * @param nationalUsdRate - The national USD to CUP exchange rate
- * @returns ProvinceData object with calculated rates for each province
+ * Fetches province exchange rates using AI vision to process the image
+ * @param nationalUsdRate - The national USD to CUP exchange rate (used for variance calculation)
+ * @returns ProvinceData object with rates extracted from the image
  */
 export async function fetchProvinceRates(
   nationalUsdRate: number
 ): Promise<ProvinceData> {
-  // This is currently synchronous, but using async allows for
-  // future enhancements like fetching from an API or database
-  return generateProvinceRates(nationalUsdRate);
+  // Get province rates from AI vision processing
+  const result = await processProvinceRatesImage();
+
+  if (!result.success || !result.data) {
+    // Fallback: return empty data if AI fails
+    return {
+      provinces: [],
+      nationalRate: nationalUsdRate,
+      lastUpdated: new Date().toISOString(),
+    };
+  }
+
+  // Transform AI data to ProvinceRate format
+  const provinces: ProvinceRate[] = result.data
+    .map((item) => {
+      const provinceId = PROVINCE_NAME_TO_ID[item.province];
+      if (!provinceId || !item.usd) {
+        return null;
+      }
+
+      // Calculate variance as percentage from national rate
+      const variance = ((item.usd - nationalUsdRate) / nationalUsdRate) * 100;
+
+      return {
+        id: provinceId,
+        name: item.province,
+        usdRate: item.usd,
+        variance: parseFloat(variance.toFixed(1)),
+        coordinates: PROVINCE_COORDINATES[provinceId] || { x: 50, y: 50 },
+      };
+    })
+    .filter((province): province is ProvinceRate => province !== null);
+
+  return {
+    provinces,
+    nationalRate: nationalUsdRate,
+    lastUpdated: new Date().toISOString(),
+  };
 }
 
 interface ProvinceRateData {
@@ -124,12 +202,12 @@ interface ProcessImageResponse {
 }
 
 /**
- * Processes an image URL containing a table of provincial exchange rates using AI vision
- * @param imageUrl - URL of the image to process (must be publicly accessible)
+ * Processes an image containing a table of provincial exchange rates using AI vision
+ * @param imageUrl - Optional URL of the image to process. If not provided, reads from public/tasa.jpg
  * @returns Structured data extracted from the image table
  */
 export async function processProvinceRatesImage(
-  imageUrl: string
+  imageUrl?: string
 ): Promise<ProcessImageResponse> {
   const apiKey = process.env.OPENAI_API_KEY;
 
@@ -140,11 +218,30 @@ export async function processProvinceRatesImage(
     };
   }
 
-  if (!imageUrl || !imageUrl.startsWith('http')) {
-    return {
-      success: false,
-      error: 'Invalid image URL. Must be a valid HTTP/HTTPS URL',
-    };
+  let imageSource: string;
+
+  // If no URL provided, read from local file
+  if (!imageUrl) {
+    try {
+      const imagePath = join(process.cwd(), 'public', 'tasa.jpg');
+      const imageBuffer = readFileSync(imagePath);
+      const base64Image = imageBuffer.toString('base64');
+      imageSource = `data:image/jpeg;base64,${base64Image}`;
+    } catch (fileError) {
+      return {
+        success: false,
+        error: `Failed to read local image: ${fileError instanceof Error ? fileError.message : 'Unknown error'}`,
+      };
+    }
+  } else {
+    // Validate URL format
+    if (!imageUrl.startsWith('http')) {
+      return {
+        success: false,
+        error: 'Invalid image URL. Must be a valid HTTP/HTTPS URL',
+      };
+    }
+    imageSource = imageUrl;
   }
 
   try {
@@ -181,7 +278,7 @@ Important:
             {
               type: 'image_url',
               image_url: {
-                url: imageUrl,
+                url: imageSource,
               },
             },
           ],
