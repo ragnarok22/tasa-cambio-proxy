@@ -68,7 +68,7 @@ The app fetches data directly from El Toque's TRMI API. There are two approaches
 4. **AI Vision Server Action** (`processProvinceRatesImage`):
    - Processes images containing provincial exchange rate tables
    - Uses OpenAI GPT-4o vision model to extract structured data
-   - Takes an optional public image URL as input, defaults to `public/tasa.jpg`
+   - Takes a public image URL as input
    - Returns array of province rate data: `{ province, usd?, eur?, mlc? }`
    - Validates and parses JSON response from AI
    - **Cached for 12 hours** using Next.js `unstable_cache` to avoid unnecessary API calls
@@ -134,7 +134,7 @@ El Toque API returns data in this structure:
 
 The app includes a provincial breakdown feature powered by AI vision:
 
-- **Data Source**: Provincial rates are extracted from `public/tasa.jpg` using OpenAI GPT-4o vision
+- **Data Source**: Provincial rates are extracted from an external image URL (`https://wa.cambiocuba.money/trmi_by_province.png`) using OpenAI GPT-4o vision
 - **Server Action** (`fetchProvinceRates`): Processes the image and transforms data to include variances, IDs, and coordinates
 - **SVG Map** (`src/components/Province-svg-map.tsx`): Interactive Cuba map with tooltips showing province rates
 - **Cuba Paths** (`src/data/cuba-paths.ts`): SVG path data for all 16 Cuban provinces
@@ -228,7 +228,7 @@ Two workflows are configured in `.github/workflows/`:
 3. **Currency Mapping**: El Toque uses `ECU` for Euro, we map it to `EUR`/`eur`
 4. **Mock Data**: App falls back to mock rates (USD: 400, EUR: 500, MLC: 200) if API fails
 5. **Referential Rates**: All UI includes disclaimers that rates are informational only
-6. **Provincial Rates**: Province-specific rates are extracted from `public/tasa.jpg` using AI vision (OpenAI GPT-4o)
+6. **Provincial Rates**: Province-specific rates are extracted from an external image URL using AI vision (OpenAI GPT-4o)
 7. **OpenAI API Key**: Required for province rate extraction during build; app falls back to empty provinces if missing
 
 ## Testing

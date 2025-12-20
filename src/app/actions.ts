@@ -1,8 +1,6 @@
 'use server';
 
 import OpenAI from 'openai';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 import { unstable_cache } from 'next/cache';
 import type { ProvinceData, ProvinceRate } from '@/types/province';
 
@@ -140,6 +138,8 @@ export async function fetchTRMI(params?: FetchTRMIParams) {
   }
 }
 
+const RATE_IMG_URL = 'https://wa.cambiocuba.money/trmi_by_province.png';
+
 /**
  * Fetches province exchange rates using AI vision to process the image
  * @param nationalUsdRate - The national USD to CUP exchange rate (used for variance calculation)
@@ -149,7 +149,7 @@ export async function fetchProvinceRates(
   nationalUsdRate: number
 ): Promise<ProvinceData> {
   // Get province rates from AI vision processing
-  const result = await processProvinceRatesImage();
+  const result = await processProvinceRatesImage(RATE_IMG_URL);
 
   if (!result.success || !result.data) {
     // Fallback: return empty data if AI fails
@@ -204,11 +204,11 @@ interface ProcessImageResponse {
 
 /**
  * Internal implementation of province rates image processing (uncached)
- * @param imageUrl - Optional URL of the image to process. If not provided, reads from public/tasa.jpg
+ * @param imageUrl - URL of the image to process
  * @returns Structured data extracted from the image table
  */
 async function _processProvinceRatesImageUncached(
-  imageUrl?: string
+  imageUrl: string
 ): Promise<ProcessImageResponse> {
   const apiKey = process.env.OPENAI_API_KEY;
 
@@ -219,30 +219,12 @@ async function _processProvinceRatesImageUncached(
     };
   }
 
-  let imageSource: string;
-
-  // If no URL provided, read from local file
-  if (!imageUrl) {
-    try {
-      const imagePath = join(process.cwd(), 'public', 'tasa.jpg');
-      const imageBuffer = readFileSync(imagePath);
-      const base64Image = imageBuffer.toString('base64');
-      imageSource = `data:image/jpeg;base64,${base64Image}`;
-    } catch (fileError) {
-      return {
-        success: false,
-        error: `Failed to read local image: ${fileError instanceof Error ? fileError.message : 'Unknown error'}`,
-      };
-    }
-  } else {
-    // Validate URL format
-    if (!imageUrl.startsWith('http')) {
-      return {
-        success: false,
-        error: 'Invalid image URL. Must be a valid HTTP/HTTPS URL',
-      };
-    }
-    imageSource = imageUrl;
+  // Validate URL format
+  if (!imageUrl.startsWith('http')) {
+    return {
+      success: false,
+      error: 'Invalid image URL. Must be a valid HTTP/HTTPS URL',
+    };
   }
 
   try {
@@ -279,7 +261,7 @@ Important:
             {
               type: 'image_url',
               image_url: {
-                url: imageSource,
+                url: imageUrl,
               },
             },
           ],
@@ -343,11 +325,11 @@ Important:
 /**
  * Processes an image containing a table of provincial exchange rates using AI vision
  * Cached for 12 hours to avoid unnecessary OpenAI API calls
- * @param imageUrl - Optional URL of the image to process. If not provided, reads from public/tasa.jpg
+ * @param imageUrl - URL of the image to process
  * @returns Structured data extracted from the image table
  */
 export const processProvinceRatesImage = unstable_cache(
-  async (imageUrl?: string) => {
+  async (imageUrl: string) => {
     return await _processProvinceRatesImageUncached(imageUrl);
   },
   ['province-rates-image'],
