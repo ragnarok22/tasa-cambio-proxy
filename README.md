@@ -195,7 +195,7 @@ Obtiene las tasas de cambio actuales desde El Toque API.
 
 ### Server Action: `fetchProvinceRates`
 
-Obtiene tasas provinciales usando visión por computadora sobre una imagen local (`public/tasa.jpg`).
+Obtiene tasas provinciales usando visión por computadora sobre una imagen externa.
 
 ```typescript
 import { fetchProvinceRates } from '@/app/actions';
@@ -248,7 +248,6 @@ tasa-cambio-proxy/
 ├── public/
 │   ├── favicon-*.png              # Favicons
 │   ├── icon-*.png                 # Íconos PWA
-│   ├── tasa.jpg                   # Imagen base para tasas provinciales
 │   ├── apple-touch-icon.png       # Ícono iOS
 │   └── robots.txt                 # Robots.txt
 ├── .github/
