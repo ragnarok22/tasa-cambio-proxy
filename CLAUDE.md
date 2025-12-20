@@ -71,6 +71,7 @@ The app fetches data directly from El Toque's TRMI API. There are two approaches
    - Takes an optional public image URL as input, defaults to `public/tasa.jpg`
    - Returns array of province rate data: `{ province, usd?, eur?, mlc? }`
    - Validates and parses JSON response from AI
+   - **Cached for 12 hours** using Next.js `unstable_cache` to avoid unnecessary API calls
    - Located in `src/app/actions.ts`
 
 5. **Province Rates Server Action** (`fetchProvinceRates`):
@@ -221,7 +222,9 @@ Two workflows are configured in `.github/workflows/`:
 ## Important Constraints
 
 1. **Date Range**: API calls with `date_from` and `date_to` must have < 24 hours difference
-2. **Cache**: 1-hour revalidation on all API calls (via Next.js `revalidate: 3600`)
+2. **Cache**:
+   - 1-hour revalidation on TRMI API calls (via Next.js `revalidate: 3600`)
+   - 12-hour cache on province rate image processing (via `unstable_cache` with `revalidate: 43200`)
 3. **Currency Mapping**: El Toque uses `ECU` for Euro, we map it to `EUR`/`eur`
 4. **Mock Data**: App falls back to mock rates (USD: 400, EUR: 500, MLC: 200) if API fails
 5. **Referential Rates**: All UI includes disclaimers that rates are informational only

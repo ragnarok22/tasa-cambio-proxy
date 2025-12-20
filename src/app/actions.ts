@@ -3,6 +3,7 @@
 import OpenAI from 'openai';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { unstable_cache } from 'next/cache';
 import type { ProvinceData, ProvinceRate } from '@/types/province';
 
 // Province name to ID mapping (CU-XX format to match SVG)
@@ -202,11 +203,11 @@ interface ProcessImageResponse {
 }
 
 /**
- * Processes an image containing a table of provincial exchange rates using AI vision
+ * Internal implementation of province rates image processing (uncached)
  * @param imageUrl - Optional URL of the image to process. If not provided, reads from public/tasa.jpg
  * @returns Structured data extracted from the image table
  */
-export async function processProvinceRatesImage(
+async function _processProvinceRatesImageUncached(
   imageUrl?: string
 ): Promise<ProcessImageResponse> {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -338,3 +339,20 @@ Important:
     };
   }
 }
+
+/**
+ * Processes an image containing a table of provincial exchange rates using AI vision
+ * Cached for 12 hours to avoid unnecessary OpenAI API calls
+ * @param imageUrl - Optional URL of the image to process. If not provided, reads from public/tasa.jpg
+ * @returns Structured data extracted from the image table
+ */
+export const processProvinceRatesImage = unstable_cache(
+  async (imageUrl?: string) => {
+    return await _processProvinceRatesImageUncached(imageUrl);
+  },
+  ['province-rates-image'],
+  {
+    revalidate: 43200, // 12 hours in seconds
+    tags: ['province-rates'],
+  }
+);
