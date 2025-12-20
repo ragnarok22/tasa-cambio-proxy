@@ -18,8 +18,8 @@ export default function ProvinceSVGMap({ provinces }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const getProvinceColor = (variance: number): string => {
-    if (variance < -10) return '#10B981'; // Green (Tailwind green-500)
-    if (variance > 10) return '#6366F1'; // Indigo (Tailwind indigo-500)
+    if (variance < -2) return '#10B981'; // Green (Tailwind green-500)
+    if (variance > 2) return '#6366F1'; // Indigo (Tailwind indigo-500)
     return '#3B82F6'; // Blue (Tailwind blue-500)
   };
 

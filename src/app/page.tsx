@@ -139,19 +139,19 @@ export default async function Home() {
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-green-500 rounded" />
                     <span className="text-gray-700">
-                      Menor que nacional ({'<'} -10%)
+                      Menor que nacional ({'<'} -2%)
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-blue-500 rounded" />
                     <span className="text-gray-700">
-                      Similar a nacional (-10% a +10%)
+                      Similar a nacional (-2% a +2%)
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-indigo-500 rounded" />
                     <span className="text-gray-700">
-                      Mayor que nacional ({'>'} +10%)
+                      Mayor que nacional ({'>'} +2%)
                     </span>
                   </div>
                 </div>
