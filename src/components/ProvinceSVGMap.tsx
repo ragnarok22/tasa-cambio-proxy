@@ -37,27 +37,39 @@ export default function ProvinceSVGMap({ provinces }: Props) {
     const containerRect = containerRef.current.getBoundingClientRect();
     const tooltipWidth = 200; // Approximate tooltip width
     const tooltipHeight = 80; // Approximate tooltip height
-    const offset = 20; // Distance above cursor
+    const offsetX = 15; // Distance from cursor horizontally
+    const offsetY = 10; // Offset to center tooltip vertically on cursor
 
     const mouseX = event.clientX - containerRect.left;
     const mouseY = event.clientY - containerRect.top;
 
     let left = mouseX;
-    let top = mouseY - offset;
+    let top = mouseY - offsetY;
 
-    // Horizontal boundary check
-    // Center tooltip on cursor, but prevent overflow
-    const halfWidth = tooltipWidth / 2;
-    if (left - halfWidth < 0) {
-      left = halfWidth; // Align to left edge
-    } else if (left + halfWidth > containerRect.width) {
-      left = containerRect.width - halfWidth; // Align to right edge
+    // Try to position to the right first
+    const spaceOnRight = containerRect.width - mouseX;
+    const spaceOnLeft = mouseX;
+
+    if (spaceOnRight >= tooltipWidth + offsetX) {
+      // Position to the right of cursor
+      left = mouseX + offsetX;
+    } else if (spaceOnLeft >= tooltipWidth + offsetX) {
+      // Position to the left of cursor
+      left = mouseX - tooltipWidth - offsetX;
+    } else {
+      // Not enough space on either side, center it with boundaries
+      left = Math.max(
+        tooltipWidth / 2,
+        Math.min(mouseX, containerRect.width - tooltipWidth / 2)
+      );
     }
 
-    // Vertical boundary check
-    // Keep tooltip above cursor, but prevent overflow at top
-    if (top - tooltipHeight < 0) {
-      top = tooltipHeight; // Minimum distance from top
+    // Vertical boundary check - center on cursor but prevent overflow
+    const halfHeight = tooltipHeight / 2;
+    if (top - halfHeight < 0) {
+      top = halfHeight; // Align to top edge
+    } else if (top + halfHeight > containerRect.height) {
+      top = containerRect.height - halfHeight; // Align to bottom edge
     }
 
     setTooltipPosition({ left, top });
@@ -108,7 +120,7 @@ export default function ProvinceSVGMap({ provinces }: Props) {
       {/* Tooltip */}
       {hoveredProvince && (
         <div
-          className="absolute bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg pointer-events-none z-10 -translate-x-1/2 -translate-y-full"
+          className="absolute bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg pointer-events-none z-10 -translate-y-1/2"
           style={{
             left: `${tooltipPosition.left}px`,
             top: `${tooltipPosition.top}px`,
