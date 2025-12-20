@@ -20,7 +20,6 @@
 
 - [Acerca del Proyecto](#-acerca-del-proyecto)
 - [Características](#-características)
-- [Capturas de Pantalla](#-capturas-de-pantalla)
 - [Tecnologías](#-tecnologías)
 - [Comenzar](#-comenzar)
 - [API](#-api)
@@ -42,18 +41,12 @@ Una aplicación web moderna construida con Next.js que muestra las tasas de camb
 - 📊 **Interfaz limpia y moderna** con cards responsive
 - ⚡ **Alto rendimiento** con SSR y cache de 1 hora
 - 🎨 **Diseño atractivo** con Tailwind CSS y gradientes
-- 🔄 **Fallback automático** con datos mock si la API falla
 - 📱 **PWA Ready** - Instálala en tu dispositivo móvil
+- 🗺️ **Mapa provincial** con tasas estimadas por provincia
+- 🤖 **AI Vision** para extraer tasas provinciales desde imagen
 - 🌐 **SEO optimizado** con Open Graph y Twitter Cards
 - ♿ **Accesible** siguiendo mejores prácticas web
 - 🚀 **Edge Runtime** para generación rápida de imágenes OG
-
-## 📸 Capturas de Pantalla
-
-<div align="center">
-  <img src="./public/screenshot-desktop.png" alt="Vista Desktop" width="600">
-  <p><em>Vista de escritorio con las tres tasas principales</em></p>
-</div>
 
 ## 🛠 Tecnologías
 
@@ -61,10 +54,11 @@ Este proyecto está construido con tecnologías modernas y eficientes:
 
 | Tecnología                                   | Propósito                                  |
 | -------------------------------------------- | ------------------------------------------ |
-| [Next.js 15](https://nextjs.org)             | Framework React con App Router y Turbopack |
+| [Next.js 16](https://nextjs.org)             | Framework React con App Router y Turbopack |
 | [React 19](https://react.dev)                | Biblioteca UI con Server Components        |
 | [TypeScript](https://www.typescriptlang.org) | Type safety en todo el proyecto            |
 | [Tailwind CSS 4](https://tailwindcss.com)    | Estilos utility-first                      |
+| [OpenAI API](https://platform.openai.com)    | Extracción de tasas provinciales           |
 | [Vercel](https://vercel.com)                 | Hosting y deployment                       |
 | [El Toque API](https://eltoque.com)          | Fuente de datos TRMI                       |
 
@@ -72,9 +66,10 @@ Este proyecto está construido con tecnologías modernas y eficientes:
 
 ### Prerequisitos
 
-- **Node.js** 18 o superior
-- **pnpm** 10.18.0+ (recomendado)
+- **Node.js** 18.18+ o 20+
+- **pnpm** 10.24.0+ (recomendado)
 - **Token de El Toque API** (necesario para datos reales)
+- **OpenAI API Key** (para tasas provinciales)
 
 ### Instalación Local
 
@@ -97,13 +92,14 @@ pnpm install
 cp .env.example .env.local
 ```
 
-Edita `.env.local` y agrega tu token de API:
+Edita `.env.local` y agrega tus credenciales:
 
 ```env
 EL_TOQUE_API_TOKEN=tu_token_aqui
+OPENAI_API_KEY=tu_openai_api_key_aqui
 ```
 
-> **Nota:** Sin el token, la app funcionará con datos mock de ejemplo.
+> **Nota:** Sin el token de El Toque la app no podrá cargar tasas reales. Sin OpenAI API Key, el mapa provincial mostrará datos vacíos.
 
 4. **Inicia el servidor de desarrollo**
 
@@ -117,14 +113,20 @@ Visita [http://localhost:3000](http://localhost:3000) para ver la aplicación.
 
 ### 📜 Scripts Disponibles
 
-| Comando               | Descripción                                 |
-| --------------------- | ------------------------------------------- |
-| `pnpm dev`            | Inicia servidor de desarrollo con Turbopack |
-| `pnpm build`          | Construye la aplicación para producción     |
-| `pnpm start`          | Inicia servidor de producción               |
-| `pnpm lint`           | Ejecuta ESLint                              |
-| `pnpm prettier`       | Formatea código con Prettier                |
-| `pnpm prettier:check` | Verifica formato del código                 |
+| Comando             | Descripción                                 |
+| ------------------- | ------------------------------------------- |
+| `pnpm dev`          | Inicia servidor de desarrollo con Turbopack |
+| `pnpm build`        | Construye la aplicación para producción     |
+| `pnpm start`        | Inicia servidor de producción               |
+| `pnpm lint`         | Ejecuta ESLint                              |
+| `pnpm format`       | Formatea código con Prettier                |
+| `pnpm format:check` | Verifica formato del código                 |
+
+### ✅ Health Check
+
+```bash
+curl http://localhost:3000/api/exchange-rate
+```
 
 ## 🔌 API
 
@@ -170,6 +172,8 @@ Obtiene las tasas de cambio actuales desde El Toque API.
 }
 ```
 
+> **Nota:** `raw` incluye el resto de las monedas y metadatos devueltos por la API.
+
 **Respuestas de error:**
 
 ```json
@@ -188,6 +192,18 @@ Obtiene las tasas de cambio actuales desde El Toque API.
   "error": "EL_TOQUE_API_TOKEN is not configured"
 }
 ```
+
+### Server Action: `fetchProvinceRates`
+
+Obtiene tasas provinciales usando visión por computadora sobre una imagen local (`public/tasa.jpg`).
+
+```typescript
+import { fetchProvinceRates } from '@/app/actions';
+
+const provinces = await fetchProvinceRates(442);
+```
+
+> **Nota:** Requiere `OPENAI_API_KEY` y se cachea por 12 horas para reducir costos.
 
 ### Server Action: `fetchTRMI`
 
@@ -214,6 +230,9 @@ if (result.success) {
 ```
 tasa-cambio-proxy/
 ├── src/
+│   ├── components/              # UI components (cards, mapa SVG)
+│   ├── data/                    # Datos estáticos
+│   ├── types/                   # Tipos compartidos
 │   └── app/
 │       ├── api/
 │       │   └── exchange-rate/
@@ -229,6 +248,7 @@ tasa-cambio-proxy/
 ├── public/
 │   ├── favicon-*.png              # Favicons
 │   ├── icon-*.png                 # Íconos PWA
+│   ├── tasa.jpg                   # Imagen base para tasas provinciales
 │   ├── apple-touch-icon.png       # Ícono iOS
 │   └── robots.txt                 # Robots.txt
 ├── .github/
@@ -268,16 +288,10 @@ pnpm build
 pnpm start
 ```
 
-**Variables de entorno requeridas:**
+**Variables de entorno:**
 
-- `EL_TOQUE_API_TOKEN` - Tu token de la API de El Toque
-
-### Docker (Próximamente)
-
-```bash
-docker build -t tasa-cambio-cuba .
-docker run -p 3000:3000 -e EL_TOQUE_API_TOKEN=your_token tasa-cambio-cuba
-```
+- `EL_TOQUE_API_TOKEN` - Tu token de la API de El Toque (requerida)
+- `OPENAI_API_KEY` - API key de OpenAI (opcional, para tasas provinciales)
 
 ## 🤝 Contribuir
 
@@ -288,7 +302,7 @@ docker run -p 3000:3000 -e EL_TOQUE_API_TOKEN=your_token tasa-cambio-cuba
 1. **Fork** el repositorio
 2. **Crea** una rama (`git checkout -b feature/nueva-funcionalidad`)
 3. **Realiza** tus cambios
-4. **Formatea** el código (`pnpm prettier`)
+4. **Formatea** el código (`pnpm format`)
 5. **Verifica** con lint (`pnpm lint`)
 6. **Commit** tus cambios (`git commit -m 'feat: nueva funcionalidad'`)
 7. **Push** a tu rama (`git push origin feature/nueva-funcionalidad`)
