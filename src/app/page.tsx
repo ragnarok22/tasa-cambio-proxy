@@ -1,3 +1,4 @@
+import { PriceCard } from '@/components/price-card';
 import ProvinceSVGMap from '@/components/ProvinceSVGMap';
 import { generateProvinceRates } from '@/data/provinceRates';
 
@@ -92,50 +93,17 @@ export default async function Home() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* USD Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold text-gray-700">USD</h2>
-                <span className="text-4xl">🇺🇸</span>
-              </div>
-              <div className="text-center">
-                <p className="text-gray-500 text-sm mb-1">
-                  Dólar Estadounidense
-                </p>
-                <p className="text-5xl font-bold text-green-600">{rates.usd}</p>
-                <p className="text-gray-400 text-sm mt-2">CUP</p>
-              </div>
-            </div>
-
-            {/* EUR Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold text-gray-700">EUR</h2>
-                <span className="text-4xl">🇪🇺</span>
-              </div>
-              <div className="text-center">
-                <p className="text-gray-500 text-sm mb-1">Euro</p>
-                <p className="text-5xl font-bold text-blue-600">{rates.eur}</p>
-                <p className="text-gray-400 text-sm mt-2">CUP</p>
-              </div>
-            </div>
-
-            {/* MLC Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold text-gray-700">MLC</h2>
-                <span className="text-4xl">🇨🇺</span>
-              </div>
-              <div className="text-center">
-                <p className="text-gray-500 text-sm mb-1">
-                  Moneda Libremente Convertible
-                </p>
-                <p className="text-5xl font-bold text-purple-600">
-                  {rates.mlc}
-                </p>
-                <p className="text-gray-400 text-sm mt-2">CUP</p>
-              </div>
-            </div>
+            <PriceCard
+              rate={rates.usd}
+              currency="USD"
+              name="Dólar Estadounidense"
+            />
+            <PriceCard rate={rates.eur} currency="EUR" name="Euro" />
+            <PriceCard
+              rate={rates.mlc}
+              currency="MLC"
+              name="Moneda Libremente Convertible"
+            />
           </div>
 
           {/* Provincial Map Section */}
