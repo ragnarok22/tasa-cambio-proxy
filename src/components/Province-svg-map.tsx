@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import type { ProvinceRate } from '@/types/province';
-import { CUBA_PROVINCE_PATHS } from '@/data/cubaPaths';
+import { CUBA_PROVINCE_PATHS } from '@/data/cuba-paths';
 
 interface Props {
   provinces: ProvinceRate[];

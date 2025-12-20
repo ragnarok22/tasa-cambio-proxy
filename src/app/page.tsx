@@ -1,6 +1,6 @@
 import { PriceCard } from '@/components/price-card';
-import ProvinceSVGMap from '@/components/ProvinceSVGMap';
-import { generateProvinceRates } from '@/data/provinceRates';
+import ProvinceSVGMap from '@/components/Province-svg-map';
+import { generateProvinceRates } from '@/data/province-rates';
 
 interface ExchangeRate {
   usd: number;
