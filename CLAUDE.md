@@ -24,10 +24,10 @@ pnpm start
 pnpm lint
 
 # Format code with Prettier
-pnpm prettier
+pnpm format
 
 # Check formatting
-pnpm prettier:check
+pnpm format:check
 ```
 
 ## Environment Setup
@@ -36,9 +36,11 @@ Create a `.env.local` file based on `.env.example`:
 
 ```
 EL_TOQUE_API_TOKEN=your_token_here
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-This token is required for the API proxy to function. Without it, the app will return mock data.
+- `EL_TOQUE_API_TOKEN`: Required for the API proxy to function. Without it, the app will return mock data.
+- `OPENAI_API_KEY`: Required for the AI vision feature that processes province rate images. Optional if not using the `processProvinceRatesImage` function.
 
 ## Architecture
 
@@ -62,6 +64,14 @@ The app fetches data directly from El Toque's TRMI API. There are two approaches
    - Reusable server action in `src/app/actions.ts`
    - Same date validation as API route
    - Returns typed response: `{ success: boolean, data?: any, error?: string }`
+
+4. **AI Vision Server Action** (`processProvinceRatesImage`):
+   - Processes images containing provincial exchange rate tables
+   - Uses OpenAI GPT-4o vision model to extract structured data
+   - Takes a public image URL as input
+   - Returns array of province rate data: `{ province, usd?, eur?, mlc? }`
+   - Validates and parses JSON response from AI
+   - Located in `src/app/actions.ts`
 
 ### API Response Transformation
 
@@ -107,16 +117,28 @@ El Toque API returns data in this structure:
   - Server component that fetches and displays exchange rates in three cards (USD, EUR, MLC)
   - Responsive grid layout (3 columns on desktop, 1 on mobile)
   - Includes disclaimers that rates are referential only
+  - **Provincial Map Section**: Interactive SVG map showing exchange rates by Cuban province
   - Footer with author attribution and link to reinierhernandez.com
   - Structured data (JSON-LD) for SEO
 
+### Provincial Exchange Rates
+
+The app includes a provincial breakdown feature:
+
+- **Server Action** (`fetchProvinceRates`): Generates province-specific rates based on national USD rate
+- **Data Structure** (`src/data/province-rates.ts`): Contains variance data for each province (-8% to +12% from national rate)
+- **SVG Map** (`src/components/Province-svg-map.tsx`): Interactive Cuba map with tooltips showing province rates
+- **Cuba Paths** (`src/data/cuba-paths.ts`): SVG path data for all 16 Cuban provinces
+- **Color Coding**: Green (< -10%), Blue (-10% to +10%), Indigo (> +10%) relative to national rate
+- **Coordinates**: Each province has tooltip positioning data (x, y percentages in viewBox)
+
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router with Turbopack)
-- **React**: 19.2.0
+- **Framework**: Next.js 16.1.0 (App Router with Turbopack)
+- **React**: 19.2.3
 - **Styling**: Tailwind CSS 4.1
 - **Fonts**: Geist Sans & Geist Mono (optimized with next/font)
-- **Package Manager**: pnpm 10.18.0
+- **Package Manager**: pnpm 10.24.0
 - **TypeScript**: 5.9.3
 
 ## Code Style
@@ -194,3 +216,13 @@ Two workflows are configured in `.github/workflows/`:
 3. **Currency Mapping**: El Toque uses `ECU` for Euro, we map it to `EUR`/`eur`
 4. **Mock Data**: App falls back to mock rates (USD: 400, EUR: 500, MLC: 200) if API fails
 5. **Referential Rates**: All UI includes disclaimers that rates are informational only
+6. **Provincial Rates**: Province-specific rates are calculated estimates based on variance percentages, not actual API data
+
+## Testing
+
+This project currently has no automated tests. All validation is done through:
+
+- ESLint for code quality
+- Prettier for formatting
+- Manual testing in development
+- CI/CD build verification
