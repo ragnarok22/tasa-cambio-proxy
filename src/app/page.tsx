@@ -1,6 +1,6 @@
 import { PriceCard } from '@/components/price-card';
 import ProvinceSVGMap from '@/components/Province-svg-map';
-import { generateProvinceRates } from '@/data/province-rates';
+import { fetchProvinceRates } from '@/app/actions';
 
 interface ExchangeRate {
   usd: number;
@@ -51,7 +51,7 @@ async function getExchangeRates(): Promise<ExchangeRate> {
 
 export default async function Home() {
   const rates = await getExchangeRates();
-  const provinceData = generateProvinceRates(rates.usd);
+  const provinceData = await fetchProvinceRates(rates.usd);
 
   const jsonLd = {
     '@context': 'https://schema.org',

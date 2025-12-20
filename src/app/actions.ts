@@ -1,5 +1,8 @@
 'use server';
 
+import { generateProvinceRates } from '@/data/province-rates';
+import type { ProvinceData } from '@/types/province';
+
 interface FetchTRMIParams {
   dateFrom?: string;
   dateTo?: string;
@@ -90,4 +93,17 @@ export async function fetchTRMI(params?: FetchTRMIParams) {
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
+}
+
+/**
+ * Fetches province exchange rates based on the national USD rate
+ * @param nationalUsdRate - The national USD to CUP exchange rate
+ * @returns ProvinceData object with calculated rates for each province
+ */
+export async function fetchProvinceRates(
+  nationalUsdRate: number
+): Promise<ProvinceData> {
+  // This is currently synchronous, but using async allows for
+  // future enhancements like fetching from an API or database
+  return generateProvinceRates(nationalUsdRate);
 }
