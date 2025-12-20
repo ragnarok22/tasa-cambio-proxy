@@ -1,6 +1,7 @@
 import { PriceCard } from '@/components/price-card';
 import ProvinceSVGMap from '@/components/Province-svg-map';
 import { fetchProvinceRates } from '@/app/actions';
+import { Github } from '@/components/Github';
 
 interface ExchangeRate {
   usd: number;
@@ -80,6 +81,7 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <Github />
       <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8 flex flex-col">
         <div className="max-w-6xl mx-auto flex-1 flex flex-col justify-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-2 text-center">

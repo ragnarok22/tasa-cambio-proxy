@@ -1,7 +1,7 @@
 export function Github() {
   return (
     <a
-      href="https://github.com/ragnarok22/whatsapp-numbers"
+      href="https://github.com/ragnarok22/tasa-cambio-proxy"
       className="github-corner"
       aria-label="View source on GitHub"
     >
