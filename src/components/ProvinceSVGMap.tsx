@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { ProvinceRate } from '@/types/province';
 import { CUBA_PROVINCE_PATHS } from '@/data/cubaPaths';
 
@@ -14,7 +14,8 @@ export default function ProvinceSVGMap({ provinces }: Props) {
   const [hoveredProvince, setHoveredProvince] = useState<ProvinceRate | null>(
     null
   );
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [tooltipPosition, setTooltipPosition] = useState({ left: 0, top: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const getProvinceColor = (variance: number): string => {
     if (variance < -10) return '#10B981'; // Green (Tailwind green-500)
@@ -27,20 +28,44 @@ export default function ProvinceSVGMap({ provinces }: Props) {
     event: React.MouseEvent<SVGPathElement>
   ) => {
     setHoveredProvince(province);
-    const rect = event.currentTarget.getBoundingClientRect();
-    setMousePosition({
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    });
+    updateTooltipPosition(event);
+  };
+
+  const updateTooltipPosition = (event: React.MouseEvent<SVGPathElement>) => {
+    if (!containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const tooltipWidth = 200; // Approximate tooltip width
+    const tooltipHeight = 80; // Approximate tooltip height
+    const offset = 20; // Distance above cursor
+
+    const mouseX = event.clientX - containerRect.left;
+    const mouseY = event.clientY - containerRect.top;
+
+    let left = mouseX;
+    let top = mouseY - offset;
+
+    // Horizontal boundary check
+    // Center tooltip on cursor, but prevent overflow
+    const halfWidth = tooltipWidth / 2;
+    if (left - halfWidth < 0) {
+      left = halfWidth; // Align to left edge
+    } else if (left + halfWidth > containerRect.width) {
+      left = containerRect.width - halfWidth; // Align to right edge
+    }
+
+    // Vertical boundary check
+    // Keep tooltip above cursor, but prevent overflow at top
+    if (top - tooltipHeight < 0) {
+      top = tooltipHeight; // Minimum distance from top
+    }
+
+    setTooltipPosition({ left, top });
   };
 
   const handleMouseMove = (event: React.MouseEvent<SVGPathElement>) => {
     if (hoveredProvince) {
-      const rect = event.currentTarget.getBoundingClientRect();
-      setMousePosition({
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
-      });
+      updateTooltipPosition(event);
     }
   };
 
@@ -49,7 +74,7 @@ export default function ProvinceSVGMap({ provinces }: Props) {
   };
 
   return (
-    <div className="relative w-full">
+    <div ref={containerRef} className="relative w-full">
       <svg
         viewBox="0 0 774.25848 264.93973"
         className="w-full h-auto"
@@ -85,8 +110,8 @@ export default function ProvinceSVGMap({ provinces }: Props) {
         <div
           className="absolute bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg pointer-events-none z-10 -translate-x-1/2 -translate-y-full"
           style={{
-            left: `${mousePosition.x}px`,
-            top: `${mousePosition.y - 10}px`,
+            left: `${tooltipPosition.left}px`,
+            top: `${tooltipPosition.top}px`,
           }}
         >
           <p className="font-bold text-sm whitespace-nowrap">
