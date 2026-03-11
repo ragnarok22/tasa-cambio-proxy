@@ -22,6 +22,8 @@ interface TRMIResponse {
   seconds: number;
 }
 
+export const dynamic = 'force-dynamic';
+
 async function getExchangeRates(): Promise<ExchangeRate> {
   const token = process.env.EL_TOQUE_API_TOKEN;
 
