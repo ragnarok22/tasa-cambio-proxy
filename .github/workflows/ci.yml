@@ -33,6 +33,9 @@ jobs:
       - name: Run linter
         run: pnpm lint
 
+      - name: Type check
+        run: pnpm typecheck
+
       - name: Build application
         run: pnpm build
         env:
