@@ -1,6 +1,7 @@
 import { PriceCard } from '@/components/price-card';
 import ProvinceSVGMap from '@/components/Province-svg-map';
 import { fetchProvinceRates } from '@/app/actions';
+import { serializeJsonForHtml } from '@/app/serialize-json-for-html';
 import { Github } from '@/components/Github';
 
 interface ExchangeRate {
@@ -81,7 +82,7 @@ export default async function Home() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonForHtml(jsonLd) }}
       />
       <Github />
       <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 p-8 flex flex-col">
