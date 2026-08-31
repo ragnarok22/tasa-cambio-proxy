@@ -108,7 +108,7 @@ export default function ProvinceSVGMap({ provinces }: Props) {
             fill={getProvinceColor(province.variance)}
             stroke="#ffffff"
             strokeWidth="3"
-            className="transition-all duration-200 hover:opacity-80 cursor-pointer"
+            className="transition-opacity duration-200 hover:opacity-80 cursor-pointer"
             onMouseEnter={(e) => handleMouseEnter(province, e)}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
