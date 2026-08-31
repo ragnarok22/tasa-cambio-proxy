@@ -38,6 +38,7 @@ Una aplicación web moderna construida con Next.js que muestra las tasas de camb
 ## ✨ Características
 
 - 🇨🇺 **Tasas en tiempo real** para USD, EUR y MLC al Peso Cubano (CUP)
+- 🧮 **Conversión de monedas** entre CUP y USD, EUR o MLC
 - 📊 **Interfaz limpia y moderna** con cards responsive
 - ⚡ **Alto rendimiento** con SSR y cache de 1 hora
 - 🎨 **Diseño atractivo** con Tailwind CSS y gradientes
@@ -316,7 +317,6 @@ pnpm start
 ### 💡 Ideas para Contribuir
 
 - 📊 Gráficos de historial de tasas
-- 🧮 Calculadora de conversión de monedas
 - 🌍 Soporte multiidioma (ES/EN)
 - 🌙 Modo oscuro
 - 📱 Notificaciones de cambios de tasa

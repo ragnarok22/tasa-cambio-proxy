@@ -2,6 +2,7 @@ import { PriceCard } from '@/components/price-card';
 import ProvinceSVGMap from '@/components/Province-svg-map';
 import { fetchProvinceRates } from '@/app/actions';
 import { serializeJsonForHtml } from '@/app/serialize-json-for-html';
+import { CurrencyConverter } from '@/components/currency-converter';
 import { Github } from '@/components/Github';
 
 interface ExchangeRate {
@@ -62,7 +63,7 @@ export default async function Home() {
     '@type': 'WebApplication',
     name: 'Tasa de Cambio Cuba',
     description:
-      'Consulta las tasas de cambio del mercado informal cubano (TRMI)',
+      'Consulta y convierte tasas de cambio del mercado informal cubano (TRMI)',
     url: 'https://tasa-cambio-cuba.vercel.app',
     applicationCategory: 'FinanceApplication',
     offers: {
@@ -110,6 +111,8 @@ export default async function Home() {
               name="Moneda Libremente Convertible"
             />
           </div>
+
+          <CurrencyConverter rates={rates} />
 
           {/* Provincial Map Section */}
           <div className="mt-12">
