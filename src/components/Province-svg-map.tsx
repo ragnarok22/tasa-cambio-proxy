@@ -8,6 +8,12 @@ interface Props {
   provinces: ProvinceRate[];
 }
 
+const getProvinceColor = (variance: number): string => {
+  if (variance < -2) return '#10B981'; // Green (Tailwind green-500)
+  if (variance > 2) return '#6366F1'; // Indigo (Tailwind indigo-500)
+  return '#3B82F6'; // Blue (Tailwind blue-500)
+};
+
 // Real Cuba map paths from cuba.svg (professional map from SimpleMaps)
 
 export default function ProvinceSVGMap({ provinces }: Props) {
@@ -16,12 +22,6 @@ export default function ProvinceSVGMap({ provinces }: Props) {
   );
   const [tooltipPosition, setTooltipPosition] = useState({ left: 0, top: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const getProvinceColor = (variance: number): string => {
-    if (variance < -2) return '#10B981'; // Green (Tailwind green-500)
-    if (variance > 2) return '#6366F1'; // Indigo (Tailwind indigo-500)
-    return '#3B82F6'; // Blue (Tailwind blue-500)
-  };
 
   const handleMouseEnter = (
     province: ProvinceRate,

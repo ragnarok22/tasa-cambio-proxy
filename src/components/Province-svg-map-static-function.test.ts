@@ -5,11 +5,11 @@ import test from 'node:test';
 test('declares getProvinceColor at module scope', async () => {
   const source = await readFile(
     new URL('./Province-svg-map.tsx', import.meta.url),
-    'utf8',
+    'utf8'
   );
   const helperDeclaration = source.indexOf('const getProvinceColor =');
   const componentDeclaration = source.indexOf(
-    'export default function ProvinceSVGMap',
+    'export default function ProvinceSVGMap'
   );
 
   assert.notEqual(helperDeclaration, -1);
