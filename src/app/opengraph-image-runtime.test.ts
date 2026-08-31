@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import test from 'node:test';
+import { test } from 'vitest';
 
 test('uses the default Node.js runtime for the Open Graph image', async () => {
   const source = await readFile(

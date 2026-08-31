@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint-and-build:
-    name: Lint and Build
+    name: Quality and Build
     runs-on: ubuntu-latest
 
     steps:
@@ -27,11 +27,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check formatting
+        run: pnpm format:check
+
       - name: Run linter
         run: pnpm lint
 
       - name: Type check
         run: pnpm typecheck
+
+      - name: Run tests with coverage
+        run: pnpm test:coverage
 
       - name: Build application
         run: pnpm build

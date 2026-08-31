@@ -57,13 +57,19 @@ Before committing, ensure your code passes all quality checks:
 
 ```bash
 # Format code
-pnpm prettier
+pnpm format
 
 # Check formatting
-pnpm prettier:check
+pnpm format:check
 
 # Lint code
 pnpm lint
+
+# Check types
+pnpm typecheck
+
+# Run tests and enforce coverage thresholds
+pnpm test:coverage
 
 # Build to verify no errors
 pnpm build

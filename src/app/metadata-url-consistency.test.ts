@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import test from 'node:test';
+import { test } from 'vitest';
 
 test('uses the same canonical and Open Graph URL', async () => {
   const source = await readFile(

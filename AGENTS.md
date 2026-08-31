@@ -21,6 +21,8 @@
 - `pnpm dev` starts the Turbopack dev server at `http://localhost:3000`.
 - `pnpm build` compiles the production bundle with Turbopack; confirm it succeeds before any release request.
 - `pnpm start` serves the built output for smoke checks.
+- `pnpm test` runs the Vitest suite once; `pnpm test:watch` keeps it active during development.
+- `pnpm test:coverage` runs the suite with V8 coverage and enforces the configured thresholds.
 - `pnpm lint` runs ESLint.
 - `pnpm format` writes Prettier formatting across the repo.
 - `pnpm format:check` verifies formatting in CI or before review.
@@ -60,16 +62,15 @@
 
 ## Testing Guidelines
 
-- This repo currently relies on formatting, linting, and build validation in CI; there are no committed automated test scripts yet.
-- When adding tests, favor Vitest with Testing Library and mirror component structure when placing specs.
+- Tests run with Vitest; use Testing Library when adding component behavior tests and mirror component structure when placing specs.
+- V8 coverage currently targets the exchange-rate route, server rate utilities, and HTML-safe JSON serializer.
 - Maintain concise, deterministic specs; prefer integration flows under `src/tests/`.
-- Always run `pnpm lint`, `pnpm format:check`, and any applicable tests before requesting review.
-- Document any new test scripts in `package.json`.
+- Always run `pnpm test:coverage`, `pnpm lint`, and `pnpm format:check` before requesting review.
 
 ## CI/CD & Release
 
 - The project follows a rolling-release model: changes merged to `main` are intended for immediate deployment.
-- `.github/workflows/ci.yml` runs formatting, lint, and build checks on pushes to `main` and on pull requests.
+- `.github/workflows/ci.yml` runs formatting, lint, type, coverage, and build checks on pushes to `main` and on pull requests.
 - `.github/workflows/deploy-preview.yml` posts PR preview guidance while Vercel handles deployment previews automatically.
 - Production and preview deployments are expected to run on Vercel.
 - `src/app/icon.tsx` and `src/app/opengraph-image.tsx` intentionally use metadata/image routes; treat their generation behavior as part of the deploy surface.

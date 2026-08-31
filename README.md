@@ -114,14 +114,18 @@ Visita [http://localhost:3000](http://localhost:3000) para ver la aplicación.
 
 ### 📜 Scripts Disponibles
 
-| Comando             | Descripción                                 |
-| ------------------- | ------------------------------------------- |
-| `pnpm dev`          | Inicia servidor de desarrollo con Turbopack |
-| `pnpm build`        | Construye la aplicación para producción     |
-| `pnpm start`        | Inicia servidor de producción               |
-| `pnpm lint`         | Ejecuta ESLint                              |
-| `pnpm format`       | Formatea código con Prettier                |
-| `pnpm format:check` | Verifica formato del código                 |
+| Comando              | Descripción                                 |
+| -------------------- | ------------------------------------------- |
+| `pnpm dev`           | Inicia servidor de desarrollo con Turbopack |
+| `pnpm build`         | Construye la aplicación para producción     |
+| `pnpm start`         | Inicia servidor de producción               |
+| `pnpm test`          | Ejecuta las pruebas una vez                 |
+| `pnpm test:watch`    | Ejecuta las pruebas en modo interactivo     |
+| `pnpm test:coverage` | Verifica pruebas y cobertura del servidor   |
+| `pnpm lint`          | Ejecuta ESLint                              |
+| `pnpm typecheck`     | Verifica los tipos de TypeScript            |
+| `pnpm format`        | Formatea código con Prettier                |
+| `pnpm format:check`  | Verifica formato del código                 |
 
 ### ✅ Health Check
 

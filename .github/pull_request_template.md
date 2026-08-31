@@ -44,7 +44,8 @@ Closes #
 ## Checklist
 
 - [ ] My code follows the project's code style
-- [ ] I have run `pnpm prettier` to format the code
+- [ ] I have run `pnpm format` to format the code
+- [ ] I have run `pnpm format:check` and `pnpm test:coverage`
 - [ ] I have run `pnpm lint` and fixed any errors
 - [ ] I have updated the documentation (if needed)
 - [ ] My changes generate no new warnings or errors
