@@ -54,30 +54,30 @@ async function getExchangeRates(): Promise<ExchangeRate> {
   };
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Tasa de Cambio Cuba',
+  description:
+    'Consulta y convierte tasas de cambio del mercado informal cubano (TRMI)',
+  url: 'https://tasa-cambio-cuba.vercel.app',
+  applicationCategory: 'FinanceApplication',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  inLanguage: 'es',
+  provider: {
+    '@type': 'Organization',
+    name: 'El Toque',
+    url: 'https://eltoque.com',
+  },
+};
+
 export default async function Home() {
   const rates = await getExchangeRates();
   const provinceData = await fetchProvinceRates(rates.usd);
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: 'Tasa de Cambio Cuba',
-    description:
-      'Consulta y convierte tasas de cambio del mercado informal cubano (TRMI)',
-    url: 'https://tasa-cambio-cuba.vercel.app',
-    applicationCategory: 'FinanceApplication',
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
-    inLanguage: 'es',
-    provider: {
-      '@type': 'Organization',
-      name: 'El Toque',
-      url: 'https://eltoque.com',
-    },
-  };
 
   return (
     <>

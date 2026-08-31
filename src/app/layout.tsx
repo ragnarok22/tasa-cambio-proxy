@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'es_ES',
-    url: 'https://tasa-cambio-cuba.vercel.app',
+    url: '/',
     title: 'Tasa de Cambio Cuba - USD, EUR, MLC al Peso Cubano',
     description:
       'Consulta las tasas de cambio actualizadas del mercado informal cubano (TRMI). Datos de El Toque actualizados cada hora.',
