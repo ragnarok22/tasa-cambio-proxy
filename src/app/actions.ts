@@ -1,5 +1,4 @@
-'use server';
-
+import 'server-only';
 import OpenAI from 'openai';
 import { unstable_cache } from 'next/cache';
 import type { ProvinceData, ProvinceRate } from '@/types/province';

@@ -1,7 +1,5 @@
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
-
 export const alt = 'Tasa de Cambio Cuba - USD, EUR, MLC a CUP';
 export const size = {
   width: 1200,
